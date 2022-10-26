@@ -1,0 +1,27 @@
+{
+  "name": "itc-discord-ob",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node src/main.ts",
+    "start": "node build/main.js",
+    "compile": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.31.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  }
+}
