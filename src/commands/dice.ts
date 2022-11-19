@@ -33,10 +33,13 @@ module.exports = {
             return
         }
         const embed_fields = []
+        var value_sum = 0
         for (var i = 0; i < diceCount; i++) {
-            embed_fields.push({ name: `${i + 1}回目`, value: `${getRandomInt(diceType) + 1}` })
+            var value = getRandomInt(diceType) + 1
+            value_sum += value_sum;
+            embed_fields.push({ name: `${i + 1}回目`, value: `${value}` })
         }
-
+        embed_fields.push({ name: "合計", value: `${value_sum}` })
         const descriptions = [
             "ダイスの時間だぁ！",
             "ダイスを振ります",
