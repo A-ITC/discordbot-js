@@ -13,11 +13,11 @@ module.exports = {
                 .setDescription('ダイスの種類')
                 .setRequired(true)
                 .addChoices(
-                    { name: '4', value: 4 },
-                    { name: '6', value: 6 },
-                    { name: '8', value: 8 },
-                    { name: '12', value: 12 },
-                    { name: '20', value: 20 },
+                    { name: '4面', value: 4 },
+                    { name: '6面', value: 6 },
+                    { name: '8面', value: 8 },
+                    { name: '12面', value: 12 },
+                    { name: '20面', value: 20 },
                 ))
         .addIntegerOption(option =>
             option.setName('count')
@@ -36,7 +36,7 @@ module.exports = {
         var value_sum = 0
         for (var i = 0; i < diceCount; i++) {
             var value = getRandomInt(diceType) + 1
-            value_sum += value_sum;
+            value_sum += value;
             embed_fields.push({ name: `${i + 1}回目`, value: `${value}` })
         }
         embed_fields.push({ name: "合計", value: `${value_sum}` })
@@ -51,7 +51,7 @@ module.exports = {
             .setColor(0x0099FF)
             .setTitle('ダイス')
             .setDescription(descriptions[getRandomInt(descriptions.length)])
-            .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+            .setThumbnail(`https://github.com/kyoichi001/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
             .addFields(embed_fields)
             .setTimestamp();
         await interaction.reply({ embeds: [replyEmbed] });
