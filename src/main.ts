@@ -1,115 +1,68 @@
+// Require the necessary discord.js classes
+import { Client, Events, Collection, GatewayIntentBits, REST, Routes, CommandInteraction } from 'discord.js';
+import dotenv from "dotenv"
+import fs from "node:fs"
+import path from "node:path"
 
-import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v9'
-import { Message, Client, CommandInteraction, CacheType, InteractionUpdateOptions, MessagePayload, SelectMenuInteraction, ButtonInteraction, Interaction } from 'discord.js'
-import dotenv from 'dotenv'
-import fs from 'node:fs'
+dotenv.config();
 
-dotenv.config()
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+var commands_rest = new Collection();
+var commands_reply = new Collection();
 
-const token = process.env.TOKEN ?? "0"
-const clientId = process.env.CLIENTID ?? "0";
-const guildId = process.env.TESTGUILDID2 ?? "0";
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-const client = new Client({
-    intents: [
-        "GUILDS",
-        "GUILD_MESSAGES",
-        "DIRECT_MESSAGES",
-        "GUILD_MEMBERS",
-        "GUILD_VOICE_STATES",
-        "GUILD_PRESENCES",
-        "GUILD_MESSAGE_REACTIONS"
-    ],
-})
-
-const rest = new REST({ version: '9' }).setToken(token);
-
-interface Command {
-    data: any,
-    answer: (interaction: CommandInteraction<CacheType>) => Promise<void>,
-    interaction?: (interaction: Interaction<CacheType>) => Promise<void>,
-    onMessageCreate?: (mes: Message) => Promise<void>
+for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    // Set a new item in the Collection with the key as the command name and the value as the exported module
+    if ('data' in command && 'execute' in command) {
+        commands_rest.set(command.data.name, command.data.toJSON());
+        commands_reply.set(command.data.name, command);
+    } else {
+        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+    }
 }
 
-// eslint-disable-next-line prefer-const
-let commands: { [name: string]: Command } = {};
-
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN ?? "");
+// and deploy your commands!
 (async () => {
-
-    console.log("loading")
-    const commandFiles = fs.readdirSync('./build/commands').filter(file => file.endsWith('.js'));
-    console.log("loaded ts files length:" + commandFiles.length)
-    const request_commands: any[] = []
     try {
-        for (const file of commandFiles) {
-            console.log("importing " + file)
-            const command = await import(`./commands/${file}`);
-            const commandName = file.split('.')[0]
-            if (command.data !== undefined) {
-                commands[commandName] = {
-                    data: command.data.toJSON(),
-                    answer: command.answer,
-                    interaction: command.interaction,
-                    onMessageCreate: command.onMessageCreate
-                };
-                request_commands.push(command.data.toJSON())
-            }
-            console.log(commands[commandName])
-        }
-        console.log(commands)
-        console.log('Started refreshing application (/) commands.');
-
-        await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: request_commands },
+        // The put method is used to fully refresh all commands in the guild with the current set
+        const data = await rest.put(
+            Routes.applicationGuildCommands(process.env.CLIENTID ?? "", process.env.TESTGUILDID ?? ""),
+            { body: commands_rest },
         );
-
-        console.log('Successfully reloaded application (/) commands.');
     } catch (error) {
+        // And of course, make sure you catch and log any errors!
         console.error(error);
     }
-})()
+})();
 
-client.once('ready', () => {
-    console.log('Ready!')
-})
+client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
 
-client.on('messageCreate', async (message: Message) => {
-    console.log("on message created")
-    if (message.author.bot) return
-    Object.keys(commands).forEach(async (key) => {
-        const func = commands[key].onMessageCreate
-        if (func) await func(message)
-    })
-})
+    const command: any = commands_reply.get(interaction.commandName);
 
-client.on('interactionCreate', async interaction => {
-    if (interaction.isCommand()) {
-        const { commandName } = interaction;
-        await commands[commandName].answer(interaction)
-        return
+    if (!command) {
+        console.error(`No command matching ${interaction.commandName} was found.`);
+        return;
     }
 
-    Object.keys(commands).forEach(async (key) => {
-        const func = commands[key].interaction
-        if (func) await func(interaction)
-    })
-});
-
-client.on('voiceStateUpdate', (oldMember, newMember) => {
-    const newUserChannel = newMember.channelId;
-    const oldUserChannel = oldMember.channelId;
-
-    if (newUserChannel === "Channel id here") //don't remove ""
-    {
-        // User Joins a voice channel
-        console.log("Joined vc with id " + newUserChannel);
-    }
-    else {
-        // User leaves a voice channel
-        console.log("Left vc");
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
 });
 
-client.login(token)
+// When the client is ready, run this code (only once)
+// We use 'c' for the event parameter to keep it separate from the already defined 'client'
+client.once(Events.ClientReady, c => {
+    console.log(`Ready! Logged in as ${c.user.tag}`);
+});
+
+// Log in to Discord with your client's token
+client.login(process.env.TOKEN);
