@@ -49,9 +49,9 @@ module.exports = {
 
         const replyEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
-            .setTitle('ダイス')
+            .setTitle(`${diceType}面ダイス`)
             .setDescription(descriptions[getRandomInt(descriptions.length)])
-            .setThumbnail(`https://github.com/kyoichi001/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
+            .setThumbnail(`https://github.com/discordbot-js/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
             .addFields(embed_fields)
             .setTimestamp();
         await interaction.reply({ embeds: [replyEmbed] });
