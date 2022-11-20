@@ -12,11 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "archiver": "^5.3.1",
     "discord-api-types": "^0.37.18",
     "discord.js": "^14.6.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
+    "@types/archiver": "^5.3.1",
+    "@types/request": "^2.48.8",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",
