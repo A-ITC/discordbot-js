@@ -20,12 +20,6 @@ module.exports = {
         .setName('shuffle_voice')
         .setDescription('指定したボイスチャンネルにいる人をシャッフルさせるコンソールを出現させます'),
     async execute(interaction: ChatInputCommandInteraction) {
-        selected_target_channels = []
-        selected_target_channel_ids = []
-        selected_members = []
-        selected_members_count = 0
-        selected_destination_channels = []
-        selected_destination_channel_ids = []
         const row = new ActionRowBuilder<ChannelSelectMenuBuilder>()
             .addComponents(
                 new ChannelSelectMenuBuilder()
@@ -60,6 +54,12 @@ module.exports = {
         await interaction.reply({ content: 'シャッフル元のチャンネルと、移動先のチャンネルを指定してください', components: [row, row2, row3] });
     },
     async channelselectmenu_action(interaction: ChannelSelectMenuInteraction) {
+        selected_target_channels = []
+        selected_target_channel_ids = []
+        selected_members = []
+        selected_members_count = 0
+        selected_destination_channels = []
+        selected_destination_channel_ids = []
         var values = interaction.values
         console.log("values:", values)
         if (interaction.customId === "shuffle_voice:target_channels") {
