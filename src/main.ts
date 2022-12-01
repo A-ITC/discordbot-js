@@ -6,7 +6,16 @@ import path from "node:path"
 
 dotenv.config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildVoiceStates
+    ]
+});
 var commands_rest = new Collection();
 var commands_reply = new Collection();
 
@@ -41,21 +50,50 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN ?? "");
 })();
 
 client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
+    if (interaction.isChatInputCommand()) {
+        const command: any = commands_reply.get(interaction.commandName);
 
-    const command: any = commands_reply.get(interaction.commandName);
+        if (!command) {
+            console.error(`No command matching ${interaction.commandName} was found.`);
+            return;
+        }
 
-    if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
+        try {
+            await command.execute(interaction);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        }
+    }
+    else if (interaction.isButton()) {
+        var key = interaction.customId.split(":")
+        const command: any = commands_reply.get(key[0]);
+        if (!command) {
+            console.error(`No command matching ${key} was found.`);
+            return;
+        }
+        try {
+            await command.button_action(interaction);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        }
+    }
+    else if (interaction.isChannelSelectMenu()) {
+        var key = interaction.customId.split(":")
+        const command: any = commands_reply.get(key[0]);
+        if (!command) {
+            console.error(`No command matching ${key} was found.`);
+            return;
+        }
+        try {
+            await command.channelselectmenu_action(interaction);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        }
     }
 
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
 });
 
 // When the client is ready, run this code (only once)
