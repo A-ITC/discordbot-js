@@ -57,7 +57,7 @@ export default class ShuffleVoice extends DiscordCommand {
         await interaction.reply({ content: 'シャッフル元のチャンネルと、移動先のチャンネルを指定してください', components: [row, row2, row3] });
     }
 
-    async channelselectmenu_action(interaction: ChannelSelectMenuInteraction) {
+    public async channelselectmenuAction(interaction: ChannelSelectMenuInteraction) {
         selected_target_channels = []
         selected_target_channel_ids = []
         selected_members = []
@@ -99,7 +99,7 @@ export default class ShuffleVoice extends DiscordCommand {
         await interaction.update({ content: '変更を確認', components: interaction.message.components, embeds: [embedBuilder] })
     }
 
-    async button_action(interaction: ButtonInteraction) {
+    public async buttonAction(interaction: ButtonInteraction) {
         if (interaction.customId === "shuffle_voice:cancel") {
             await interaction.update({ content: 'キャンセルされました', components: [] })
         } else if (interaction.customId === "shuffle_voice:enter") {
