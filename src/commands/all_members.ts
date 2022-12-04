@@ -14,7 +14,7 @@ export default class AllMembers extends DiscordCommand {
         const members = await guild?.members.fetch()
         let text = "id,name\n"
         members?.each((member) => text += `${member.id},${member.displayName}\n`)
-        await fs.writeFile("/tmp/members.csv", text, "utf-8")
-        await interaction.reply({ files: ["/tmp/members.csv"] });
+        await fs.writeFile("./members.csv", text, "utf-8")
+        await interaction.reply({ files: ["./members.csv"] });
     }
 }
