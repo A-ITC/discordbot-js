@@ -1,15 +1,14 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, CacheType } from 'discord.js';
+import DiscordCommand from '../utils/command';
 
-function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-}
+export default class Dice extends DiscordCommand {
+    public name = "dice"
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('dice')
+    public data = new SlashCommandBuilder()
+        .setName(this.name)
         .setDescription('ダイスを振ります')
         .addIntegerOption(option =>
-            option.setName('dice')
+            option.setName(this.name)
                 .setDescription('ダイスの種類')
                 .setRequired(true)
                 .addChoices(
@@ -24,8 +23,13 @@ module.exports = {
                 .setDescription('ダイスの個数')
                 .setRequired(true)
                 .setMaxValue(10)
-                .setMinValue(1)),
-    async execute(interaction: ChatInputCommandInteraction) {
+                .setMinValue(1))
+
+    private getRandomInt(max: number) {
+        return Math.floor(Math.random() * max);
+    }
+
+    public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
         const diceType = interaction.options.getInteger("dice")
         const diceCount = interaction.options.getInteger("count")
         if (!diceType || !diceCount) {
@@ -35,7 +39,7 @@ module.exports = {
         const embed_fields = []
         var value_sum = 0
         for (var i = 0; i < diceCount; i++) {
-            var value = getRandomInt(diceType) + 1
+            var value = this.getRandomInt(diceType) + 1
             value_sum += value;
             embed_fields.push({ name: `${i + 1}回目`, value: `${value}` })
         }
@@ -50,10 +54,10 @@ module.exports = {
         const replyEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle(`${diceType}面ダイス`)
-            .setDescription(descriptions[getRandomInt(descriptions.length)])
-            .setThumbnail(`https://github.com/discordbot-js/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
+            .setDescription(descriptions[this.getRandomInt(descriptions.length)])
+            .setThumbnail(`https://github.com/a-itc/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
             .addFields(embed_fields)
             .setTimestamp();
         await interaction.reply({ embeds: [replyEmbed] });
-    },
-};
+    }
+}
