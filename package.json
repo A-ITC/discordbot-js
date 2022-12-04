@@ -5,17 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node src/main.ts",
-    "start": "node build/main.js",
-    "compile": "tsc -p ."
+    "start": "node --enable-source-maps discordbot-js/main.js",
+    "build": "node build.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "private": true,
   "dependencies": {
     "archiver": "^5.3.1",
     "discord-api-types": "^0.37.18",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.0",
+    "esbuild": "^0.15.16",
     "request": "^2.88.2"
   },
   "devDependencies": {

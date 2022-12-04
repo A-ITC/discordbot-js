@@ -1,8 +1,11 @@
-// Require the necessary discord.js classes
-import { Client, Events, Collection, GatewayIntentBits, REST, Routes, CommandInteraction } from 'discord.js';
+import { Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { DiscordCommandHandler } from './utils/command';
 import dotenv from "dotenv"
-import fs from "node:fs"
-import path from "node:path"
+import Dice from './commands/dice';
+import FetchChannelImg from './commands/fetch_channel_img';
+import Ping from './commands/ping';
+import ShuffleVoice from './commands/shuffleVoice';
+import Stop from './commands/stop';
 
 dotenv.config();
 
@@ -16,91 +19,31 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates
     ]
 });
-var commands_rest = new Collection();
-var commands_reply = new Collection();
 
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const handler = new DiscordCommandHandler()
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    // Set a new item in the Collection with the key as the command name and the value as the exported module
-    if ('data' in command && 'execute' in command) {
-        commands_rest.set(command.data.name, command.data.toJSON());
-        commands_reply.set(command.data.name, command);
-    } else {
-        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-    }
-}
+handler.registerCommands([
+    new Dice(),
+    new FetchChannelImg(),
+    new Ping(),
+    new ShuffleVoice(),
+    new Stop(),
+])
 
-const rest = new REST({ version: '10' }).setToken(process.env.TOKEN ?? "");
-// and deploy your commands!
-(async () => {
-    try {
-        // The put method is used to fully refresh all commands in the guild with the current set
-        const data = await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENTID ?? "", process.env.TESTGUILDID ?? ""),
-            { body: commands_rest },
-        );
-    } catch (error) {
-        // And of course, make sure you catch and log any errors!
-        console.error(error);
-    }
-})();
+new REST({ version: '10' }).setToken(process.env.TOKEN ?? "").put(
+    Routes.applicationGuildCommands(process.env.CLIENTID ?? "", process.env.TESTGUILDID ?? ""),
+    { body: handler.rests },
+).catch(error => {
+    console.error(error);
+})
 
 client.on(Events.InteractionCreate, async (interaction) => {
-    if (interaction.isChatInputCommand()) {
-        const command: any = commands_reply.get(interaction.commandName);
-
-        if (!command) {
-            console.error(`No command matching ${interaction.commandName} was found.`);
-            return;
-        }
-
-        try {
-            await command.execute(interaction);
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
-    }
-    else if (interaction.isButton()) {
-        var key = interaction.customId.split(":")
-        const command: any = commands_reply.get(key[0]);
-        if (!command) {
-            console.error(`No command matching ${key} was found.`);
-            return;
-        }
-        try {
-            await command.button_action(interaction);
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
-    }
-    else if (interaction.isChannelSelectMenu()) {
-        var key = interaction.customId.split(":")
-        const command: any = commands_reply.get(key[0]);
-        if (!command) {
-            console.error(`No command matching ${key} was found.`);
-            return;
-        }
-        try {
-            await command.channelselectmenu_action(interaction);
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
-    }
-
+    console.log("interaction:", interaction)
+    handler.execute(interaction)
 });
 
-// When the client is ready, run this code (only once)
-// We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, c => {
     console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
-// Log in to Discord with your client's token
 client.login(process.env.TOKEN);
