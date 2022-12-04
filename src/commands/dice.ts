@@ -55,7 +55,7 @@ export default class Dice extends DiscordCommand {
             .setColor(0x0099FF)
             .setTitle(`${diceType}面ダイス`)
             .setDescription(descriptions[this.getRandomInt(descriptions.length)])
-            .setThumbnail(`https://github.com/discordbot-js/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
+            .setThumbnail(`https://github.com/a-itc/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
             .addFields(embed_fields)
             .setTimestamp();
         await interaction.reply({ embeds: [replyEmbed] });
