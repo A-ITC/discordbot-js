@@ -1,0 +1,16 @@
+{
+  "name": "itc-discord-ob",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node --enable-source-maps main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "discord.js": "^14.6.0"
+  }
+}

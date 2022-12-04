@@ -16,7 +16,7 @@ exec("npx tsc --noEmit").then(async () => {
         entryPoints: ["src/main.ts"],
         external: ["discord.js"],
         bundle: true,
-        minify: true,
+        minify: false,
         sourcemap: true,
         format: "cjs",
         platform: "node",

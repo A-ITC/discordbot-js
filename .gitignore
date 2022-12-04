@@ -2,6 +2,7 @@ node_modules
 .env
 config.json
 build
-discordbot-js
+discordbot-js/main.js
+discordbot-js/main.js.map
 .DS_Store
 *.code-workspace
