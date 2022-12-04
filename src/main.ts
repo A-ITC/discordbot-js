@@ -29,7 +29,10 @@ new REST({ version: '10' }).setToken(process.env.TOKEN ?? "").put(
     console.error(error);
 })
 
-client.on(Events.InteractionCreate, async (interaction) => handler.execute(interaction));
+client.on(Events.InteractionCreate, async (interaction) => {
+    console.log("interaction:", interaction)
+    handler.execute(interaction)
+});
 
 client.once(Events.ClientReady, c => {
     console.log(`Ready! Logged in as ${c.user.tag}`);

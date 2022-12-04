@@ -14,6 +14,7 @@ exec("npx tsc --noEmit").then(async () => {
     console.log("(2/3): source build")
     await build({
         entryPoints: ["src/main.ts"],
+        external: ["discord.js"],
         bundle: true,
         minify: true,
         sourcemap: true,
@@ -27,5 +28,5 @@ exec("npx tsc --noEmit").then(async () => {
     const address = process.env.DEPLOY_ADDRESS
     const pubKey = process.env.DEPLOY_PUB_KEY
     // await copyFile(".env", OUTPUT_DIR)
-    await exec(`scp -i ${pubKey} -r ${OUTPUT_DIR} ${user}@${address}:~`)
+    //await exec(`scp -i ${pubKey} -r ${OUTPUT_DIR} ${user}@${address}:~`)
 })
