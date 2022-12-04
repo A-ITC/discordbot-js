@@ -15,7 +15,7 @@ exec("npx tsc --noEmit").then(async () => {
     await build({
         entryPoints: ["src/main.ts"],
         bundle: true,
-        minify: true,
+        minify: false,
         sourcemap: true,
         format: "cjs",
         platform: "node",
