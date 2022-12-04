@@ -2,7 +2,7 @@
   "name": "itc-discord-ob",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "ts-node src/main.ts",
     "start": "node --enable-source-maps discordbot-js/main.js",

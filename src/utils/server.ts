@@ -12,7 +12,7 @@ export function createRouter(client: Client<boolean>) {
     // ここにAPIを定義
     const router = new Router()
 
-    router.post('/message', koaBody(), async ctx => {
+    router.post('/messages', koaBody(), async ctx => {
         const { channelId, content, signature } = ctx.request.body
         const text = `${channelId},${content},${process.env.SECRET_KEY}`
         if (createHash('sha256').update(text).digest('hex') !== signature) {
