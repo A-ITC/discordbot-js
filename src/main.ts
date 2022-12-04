@@ -1,4 +1,5 @@
 import { Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { createRouter, apiErrorHandler } from './utils/server';
 import { DiscordCommandHandler } from './utils/command';
 import dotenv from "dotenv"
 import Dice from './commands/dice';
@@ -6,6 +7,8 @@ import FetchChannelImg from './commands/fetch_channel_img';
 import Ping from './commands/ping';
 import ShuffleVoice from './commands/shuffleVoice';
 import Stop from './commands/stop';
+import cors from '@koa/cors'
+import Koa from 'koa'
 
 dotenv.config();
 
@@ -47,3 +50,9 @@ client.once(Events.ClientReady, c => {
 });
 
 client.login(process.env.TOKEN);
+
+const app = new Koa();
+app.use(cors());
+app.use(apiErrorHandler);
+app.use(createRouter(client))
+app.listen(4030, () => process.stdout.write('RESTAPI server started at port 4030\n'))
