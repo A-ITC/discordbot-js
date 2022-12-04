@@ -2,6 +2,10 @@ import { Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
 import { DiscordCommandHandler } from './utils/command';
 import dotenv from "dotenv"
 import Dice from './commands/dice';
+import FetchChannelImg from './commands/fetch_channel_img';
+import Ping from './commands/ping';
+import ShuffleVoice from './commands/shuffleVoice';
+import Stop from './commands/stop';
 
 dotenv.config();
 
@@ -20,6 +24,10 @@ const handler = new DiscordCommandHandler()
 
 handler.registerCommands([
     new Dice(),
+    new FetchChannelImg(),
+    new Ping(),
+    new ShuffleVoice(),
+    new Stop(),
 ])
 
 new REST({ version: '10' }).setToken(process.env.TOKEN ?? "").put(

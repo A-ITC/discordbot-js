@@ -1,18 +1,21 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, AttachmentBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, AttachmentBuilder, CacheType } from 'discord.js';
 import fs from "node:fs"
 import path from "node:path"
 import request from "request"
 import archiver from "archiver"
+import DiscordCommand from '../utils/command';
 
-module.exports = {
-    data: new SlashCommandBuilder()
+export default class FetchChannelImg extends DiscordCommand {
+    public name = "fetch_channel_img"
+    public data = new SlashCommandBuilder()
         .setName('fetch_channel_img')
         .setDescription('チャンネル内の画像をすべてダウンロード')
         .addChannelOption(option =>
             option.setName("channel")
                 .setDescription("対象となるチャンネル(指定しないとこのコマンドを呼び出したチャンネルを指定)")
-                .setRequired(false)),
-    async execute(interaction: ChatInputCommandInteraction) {
+                .setRequired(false))
+
+    public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
         const channel = interaction.options.getChannel("channel")
         if (!channel ||
             channel.type === ChannelType.GuildVoice ||
@@ -68,5 +71,5 @@ module.exports = {
 
         const attachment = new AttachmentBuilder(zipPath);
         await interaction.reply({ content: `${fileCount}件の画像を取得しました`, files: [attachment] });
-    },
-};
+    }
+}

@@ -1,11 +1,12 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
-
-module.exports = {
-    data: new SlashCommandBuilder()
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
+import DiscordCommand from '../utils/command';
+export default class Stop extends DiscordCommand {
+    public name = "stop"
+    public data = new SlashCommandBuilder()
         .setName('stop')
-        .setDescription('ボットを停止させます'),
-    async execute(interaction: ChatInputCommandInteraction) {
+        .setDescription('ボットを停止させます')
+    public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
         await interaction.reply("botを停止させます")
         process.exit()
-    },
-};
+    }
+}

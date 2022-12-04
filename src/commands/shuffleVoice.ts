@@ -1,4 +1,5 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, ActionRowBuilder, ChannelSelectMenuBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction, ChannelSelectMenuInteraction, ChannelType, ComponentType, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, ActionRowBuilder, ChannelSelectMenuBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction, ChannelSelectMenuInteraction, ChannelType, ComponentType, EmbedBuilder, CacheType } from 'discord.js';
+import DiscordCommand from '../utils/command';
 
 var selected_target_channels: string[] = []
 var selected_target_channel_ids: string[] = []
@@ -15,11 +16,13 @@ const shuffle = ([...array]) => {
     return array;
 }
 
-module.exports = {
-    data: new SlashCommandBuilder()
+export default class ShuffleVoice extends DiscordCommand {
+    public name = "shuffle_voice"
+    public data = new SlashCommandBuilder()
         .setName('shuffle_voice')
-        .setDescription('指定したボイスチャンネルにいる人をシャッフルさせるコンソールを出現させます'),
-    async execute(interaction: ChatInputCommandInteraction) {
+        .setDescription('指定したボイスチャンネルにいる人をシャッフルさせるコンソールを出現させます')
+
+    public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
         const row = new ActionRowBuilder<ChannelSelectMenuBuilder>()
             .addComponents(
                 new ChannelSelectMenuBuilder()
@@ -52,7 +55,8 @@ module.exports = {
                     .setLabel("決定")
             )
         await interaction.reply({ content: 'シャッフル元のチャンネルと、移動先のチャンネルを指定してください', components: [row, row2, row3] });
-    },
+    }
+
     async channelselectmenu_action(interaction: ChannelSelectMenuInteraction) {
         selected_target_channels = []
         selected_target_channel_ids = []
@@ -93,7 +97,8 @@ module.exports = {
             .addFields({ name: `移動元`, value: target_value })
             .addFields({ name: `移動先`, value: destination_value })
         await interaction.update({ content: '変更を確認', components: interaction.message.components, embeds: [embedBuilder] })
-    },
+    }
+
     async button_action(interaction: ButtonInteraction) {
         if (interaction.customId === "shuffle_voice:cancel") {
             await interaction.update({ content: 'キャンセルされました', components: [] })
@@ -118,4 +123,4 @@ module.exports = {
             }
         }
     }
-};
+}
