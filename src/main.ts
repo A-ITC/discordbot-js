@@ -10,6 +10,10 @@ import Stop from './commands/stop';
 import cors from '@koa/cors'
 import Koa from 'koa'
 import AllMembers from './commands/all_members';
+import "./utils/logging"
+import { getLogger } from 'log4js';
+
+const logger = getLogger()
 
 dotenv.config();
 
@@ -39,16 +43,16 @@ new REST({ version: '10' }).setToken(process.env.TOKEN ?? "").put(
     Routes.applicationGuildCommands(process.env.CLIENTID ?? "", process.env.TESTGUILDID ?? ""),
     { body: handler.rests },
 ).catch(error => {
-    console.error(error);
+    logger.error(error);
 })
 
 client.on(Events.InteractionCreate, async (interaction) => {
-    console.log("interaction:", interaction)
+    logger.log(`interaction: ${interaction}`)
     handler.execute(interaction)
 });
 
 client.once(Events.ClientReady, c => {
-    console.log(`Ready! Logged in as ${c.user.tag}`);
+    logger.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
 client.login(process.env.TOKEN);

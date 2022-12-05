@@ -1,10 +1,13 @@
 import { Next, ParameterizedContext } from 'koa'
 import { Client, TextChannel } from 'discord.js'
 import { createHash } from 'crypto';
+import { getLogger } from 'log4js';
 import koaBody from "koa-body"
 import Router from "koa-router"
 import dotenv from "dotenv"
+
 dotenv.config();
+const logger = getLogger();
 
 export function createRouter(client: Client<boolean>) {
     // ここにAPIを定義
@@ -27,12 +30,13 @@ export function createRouter(client: Client<boolean>) {
 export async function apiErrorHandler(ctx: ParameterizedContext, next: Next) {
     // APIのエラー処理
     try {
+        logger.log(`${ctx.URL.pathname} ${ctx.method}`)
         await next();
         if (ctx.status === 404) {
-            throw Error("404 not found")
+            logger.warn("404 not found")
         }
     } catch (err: any) {
-        console.error('error', err)
+        logger.error(err)
         ctx.status = ctx.status || 500;
         ctx.body = JSON.stringify({ status: "ng", detail: err.message || err })
     }

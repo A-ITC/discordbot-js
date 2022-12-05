@@ -1,4 +1,7 @@
 import { Collection, Interaction, ChatInputCommandInteraction, ButtonInteraction, ChannelSelectMenuInteraction } from 'discord.js';
+import { getLogger } from 'log4js';
+
+const logger = getLogger()
 
 export default abstract class DiscordCommand {
     public abstract name: string
@@ -6,19 +9,19 @@ export default abstract class DiscordCommand {
 
     public async chatInputAction(interaction: ChatInputCommandInteraction) {
         const message = `'chatInputAction' does not defined in the command: ${this.name}`
-        console.error(message);
+        logger.error(message);
         await interaction.reply({ content: message, ephemeral: true });
     }
 
     public async buttonAction(interaction: ButtonInteraction) {
         const message = `'buttonAction' does not defined in the command: ${this.name}`
-        console.error(message);
+        logger.error(message);
         await interaction.reply({ content: message, ephemeral: true });
     }
 
     public async channelselectmenuAction(interaction: ChannelSelectMenuInteraction) {
         const message = `'channelselectmenuAction' does not defined in the command: ${this.name}`
-        console.error(message);
+        logger.error(message);
         await interaction.reply({ content: message, ephemeral: true });
     }
 }
@@ -47,7 +50,7 @@ export class DiscordCommandHandler {
                 await this.executeChannelselectmenuAction(interaction)
             }
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             await (interaction as any)?.reply({ content: `An error occurred while executing the command.\n` + error, ephemeral: true });
         }
     }
