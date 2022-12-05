@@ -9,6 +9,7 @@ import ShuffleVoice from './commands/shuffleVoice';
 import Stop from './commands/stop';
 import cors from '@koa/cors'
 import Koa from 'koa'
+import AllMembers from './commands/all_members';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ handler.registerCommands([
     new Ping(),
     new ShuffleVoice(),
     new Stop(),
+    new AllMembers(),
 ])
 
 new REST({ version: '10' }).setToken(process.env.TOKEN ?? "").put(

@@ -48,7 +48,7 @@ export class DiscordCommandHandler {
             }
         } catch (error) {
             console.error(error);
-            await (interaction as any)?.reply({ content: `An error occurred while executing the command.`, ephemeral: true });
+            await (interaction as any)?.reply({ content: `An error occurred while executing the command.\n` + error, ephemeral: true });
         }
     }
 
