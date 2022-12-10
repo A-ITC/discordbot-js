@@ -7,3 +7,4 @@ discordbot-js/main.js.map
 .DS_Store
 *.code-workspace
 members.csv
+logs/
