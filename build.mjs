@@ -14,7 +14,7 @@ dotenv.config()
 console.log("(2/3): source build")
 await build({
     entryPoints: ["src/main.ts"],
-    external: ["discord.js"],
+    external: ["discord.js", "log4js"],
     bundle: true,
     minify: false,
     sourcemap: true,

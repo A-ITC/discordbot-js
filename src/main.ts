@@ -1,3 +1,4 @@
+import log4js from 'log4js';
 import { Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
 import { createRouter, apiErrorHandler } from './utils/server';
 import { DiscordCommandHandler } from './utils/command';
@@ -11,9 +12,10 @@ import cors from '@koa/cors'
 import Koa from 'koa'
 import AllMembers from './commands/all_members';
 import "./utils/logging"
-import { getLogger } from 'log4js';
 
-const logger = getLogger()
+const logger = log4js.getLogger("system")
+logger.level = "all"
+//logger.debug("Some debug messages");
 
 dotenv.config();
 
