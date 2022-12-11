@@ -6,7 +6,8 @@ export default class Stop extends DiscordCommand {
         .setName('stop')
         .setDescription('ボットを停止させます')
     public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
-        await interaction.reply("botを停止させます")
+        await interaction.deferReply();
+        await interaction.editReply("botを停止させます")
         process.exit()
     }
 }

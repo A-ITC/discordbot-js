@@ -23,6 +23,7 @@ export default class ShuffleVoice extends DiscordCommand {
         .setDescription('指定したボイスチャンネルにいる人をシャッフルさせるコンソールを出現させます')
 
     public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
+        await interaction.deferReply();
         const row = new ActionRowBuilder<ChannelSelectMenuBuilder>()
             .addComponents(
                 new ChannelSelectMenuBuilder()
@@ -54,7 +55,7 @@ export default class ShuffleVoice extends DiscordCommand {
                     .setStyle(ButtonStyle.Primary)
                     .setLabel("決定")
             )
-        await interaction.reply({ content: 'シャッフル元のチャンネルと、移動先のチャンネルを指定してください', components: [row, row2, row3] });
+        await interaction.editReply({ content: 'シャッフル元のチャンネルと、移動先のチャンネルを指定してください', components: [row, row2, row3] });
     }
 
     public async channelselectmenuAction(interaction: ChannelSelectMenuInteraction) {

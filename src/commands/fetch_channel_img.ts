@@ -16,6 +16,7 @@ export default class FetchChannelImg extends DiscordCommand {
                 .setRequired(false))
 
     public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
+        await interaction.deferReply();
         const channel = interaction.options.getChannel("channel")
         if (!channel ||
             channel.type === ChannelType.GuildVoice ||
@@ -23,13 +24,13 @@ export default class FetchChannelImg extends DiscordCommand {
             channel.type === ChannelType.GuildCategory ||
             channel.type === ChannelType.GuildNews
         ) {
-            await interaction.reply("テキストチャンネルを指定してください");
+            await interaction.editReply("テキストチャンネルを指定してください");
             return
         }
         const id = channel.id
         const target_channel = interaction.client.channels.cache.get(id)
         if (!target_channel || !target_channel.isTextBased()) {
-            await interaction.reply("チャンネルが見つかりませんでした");
+            await interaction.editReply("チャンネルが見つかりませんでした");
             return
         }
         var messages = await target_channel.messages.fetch()
@@ -70,6 +71,6 @@ export default class FetchChannelImg extends DiscordCommand {
         await archive.finalize();
 
         const attachment = new AttachmentBuilder(zipPath);
-        await interaction.reply({ content: `${fileCount}件の画像を取得しました`, files: [attachment] });
+        await interaction.editReply({ content: `${fileCount}件の画像を取得しました`, files: [attachment] });
     }
 }
