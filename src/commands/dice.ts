@@ -30,6 +30,7 @@ export default class Dice extends DiscordCommand {
     }
 
     public async chatInputAction(interaction: ChatInputCommandInteraction<CacheType>) {
+        await interaction.deferReply();
         const diceType = interaction.options.getInteger("dice")
         const diceCount = interaction.options.getInteger("count")
         if (!diceType || !diceCount) {
@@ -58,6 +59,6 @@ export default class Dice extends DiscordCommand {
             .setThumbnail(`https://github.com/a-itc/discordbot-js/blob/main/resrouce/dice_${diceType}.png?raw=true`)
             .addFields(embed_fields)
             .setTimestamp();
-        await interaction.reply({ embeds: [replyEmbed] });
+        await interaction.editReply({ embeds: [replyEmbed] });
     }
 }

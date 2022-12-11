@@ -26,7 +26,7 @@ await build({
     const user = process.env.DEPLOY_USERNAME
     const address = process.env.DEPLOY_ADDRESS
     const pubKey = process.env.DEPLOY_PUB_KEY
-    // const promises = [".env", "main.js", "main.js.map"]
-    //     .map(fn => exec(`scp -i ${pubKey} ${OUTPUT_DIR}/${fn} ${user}@${address}:~/${OUTPUT_DIR}/`))
-    // await Promise.all(promises)
+    //const promises = [".env", "main.js", "main.js.map"]
+    //    .map(fn => exec(`scp -i ${pubKey} ${OUTPUT_DIR}/${fn} ${user}@${address}:~/${OUTPUT_DIR}/`))
+    //await Promise.all(promises)
 })
